@@ -1,0 +1,59 @@
+<style>
+  .navbar{
+    position: fixed;
+    top: 0px;
+    z-index: 1000;
+    width: 100vw;
+  }
+  body{
+    padding-top: 60px;
+  }
+</style>
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="index.html">
+      <img src="https://s14.gifyu.com/images/bKU2F.png" style="width: 150px;">
+    </a>
+
+    <div class="d-flex align-items-center d-lg-none">
+      <a href="cart.html" class="btn p-0 position-relative me-3">
+        <i class="bi bi-cart3 fs-4"></i>
+        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">0</span>
+      </a>
+
+      <button class="navbar-toggler p-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Главная</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="companyinfo.html">О компаний</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="catalog.html">Каталог</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="companyinfo.html">Сертификаты</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="cart.html">
+            Корзина <span id="cart-count-desktop" class="badge text-bg-primary">0</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<script>
+  function updateFavoritesCount() {
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    document.getElementById('favorites-count').textContent = favorites.length;
+    document.getElementById('favorites-count-desktop').textContent = favorites.length;
+  }
+</script>

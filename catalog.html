@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Каталог товаров</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    .card.product-card {
+      border: none;
+      border-radius: 1.25rem;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: #fff;
+    }
+
+    .card.product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-img-top {
+      height: 230px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .product-img-top:hover {
+      transform: scale(1.05);
+    }
+
+    .card-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-body h6 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      line-height: 1.3em;
+      height: 2.6em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-body .text-success {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .card-body .btn {
+      border-radius: 50px;
+      padding: 0.45rem 1rem;
+    }
+
+    .card-body .btn-outline-secondary {
+      background-color: #f9f9f9;
+    }
+
+    .badge.bg-white {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .carousel-item img {
+      height: 370px;
+      object-fit: cover;
+    }
+    .bg-light {
+        background: #f5f9fa;
+    }
+
+    .card-img{
+      height: 270px;
+    }
+
+    img.img-fluid {
+        max-height: 150px;
+        object-fit: contain;
+    }
+
+    #product-list {
+        min-height: 350px;
+    }
+    .custom-toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #198754; /* Bootstrap green */
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      font-size: 16px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .custom-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .product-card {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .product-img-top {
+      height: 220px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .product-img-top:hover {
+      transform: scale(1.03);
+    }
+
+    .text-truncate-2 {
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+    }
+
+    .categories img{
+      width: 100%;
+      height: 150px;
+      border-radius: 10px;
+      object-fit: cover; 
+      object-position: center;
+    }
+    .categories{
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); /* ← пять столбцов */
+      gap: 1.5rem;
+      margin: auto;
+      margin-bottom: 50px;
+    }
+    .categories button{
+      display: grid;
+      align-items: center;
+      gap: 1em;
+      grid-template-columns: 40% 50%;
+      padding: 0px 15px;
+      border-radius: 7px;
+      border: 0px;
+      padding: 10px;
+    }
+    .categories img{
+      width: 100%;
+      height: 70px;
+    }
+    .categories span{
+      text-align: left;
+    }
+    .brands-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .brand-item {
+      width: 300px;
+      height: 100px;
+      overflow: hidden;
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .brand-item img {
+      width: 80%;
+      object-fit: contain;
+    }
+
+
+
+    .price-old {
+      text-decoration: line-through;
+      color: #6c757d;      /* bootstrap‑серый */
+      font-size: 0.95rem;
+    }
+
+    .company-info-content {
+      height: 450px;
+      max-width: 1250px;
+      width: 100%;
+      margin: 50px auto;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+
+      border-radius: 20px;
+      background-image: url('https://i2.photo.2gis.com/images/branch/0/30258560121103879_4a6d.jpg');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+
+      position: relative;
+    }
+
+    .company-info_link {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-decoration: none;
+      text-align: center;
+      color: white;
+      width: 250px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background-color: orange;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    .company-info_link-2 {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-decoration: none;
+      text-align: center;
+      color: white;
+      width: 250px;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background-color: orange;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+.company-info_link:hover {
+  background-color: darkorange;
+}
+
+
+
+    @media (max-width: 992px) {
+      .categories {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .categories img{
+        width: 100%;
+        height: 70px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .categories {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .categories {
+        grid-template-columns: 1fr;
+      }
+      .categories img{
+        width: 100%;
+        height: 90px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+<div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="https://s14.gifyu.com/images/bK6s1.png" class="d-block w-100" alt="Баннер 1">
+    </div>
+    <div class="carousel-item">
+      <img src="https://s14.gifyu.com/images/bK6sG.png" class="d-block w-100" alt="Баннер 2">
+    </div>
+    
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="container my-5">
+  <h1 class="mb-4 text-center">Каталог товаров</h1>
+  <div class="mb-4 text-center">
+    <input id="search-input" type="text" class="form-control w-100 mx-auto" placeholder="Поиск по товарам...">
+  </div>
+  <div class="categories">
+      <button class="" onclick="filterCategory('Все')" style="background-color: #ebf6ff;">
+        <img src="https://s14.gifyu.com/images/bK7OW.png">
+        <span>Все продукций</span>
+      </button>
+      <button class="" onclick="filterCategory('Мужской уход')" style="background-color: #ecf8f8;">
+        <img src="https://png.pngtree.com/png-vector/20240929/ourmid/pngtree-vitamin-bottle-mockup-on-transparent-background-include-file-png-image_13962082.png">
+        <span>Мужская продукция</span>
+      </button>
+      <button class="" onclick="filterCategory('Женский уход')" style="background-color: #f8f5ec;">
+        <img src="https://s14.gifyu.com/images/bKsOH.png">
+        <span>Женское здоровье</span>
+      </button>
+      <button class="" onclick="filterCategory('Детский уход')" style="background-color: #ecf8f8;">
+        <img src="https://images.ua.prom.st/1401583600_w640_h640_detskie-zhevatelnye-pastilki.jpg">
+        <span>Для детей</span>
+      </button>
+      <button class="" onclick="filterCategory('Детокс')" style="background-color: #f4f0eb;">
+        <img src="https://png.pngtree.com/png-vector/20241120/ourmid/pngtree-healthy-detox-green-juice-with-fresh-fruits-and-vegetables-png-image_14506517.png">
+        <span>Детокс</span>
+      </button>
+  </div>
+
+
+  <div id="product-list" class="row g-4"></div>
+  <nav aria-label="Навигация по страницам">
+    <ul id="pagination" class="pagination justify-content-center mt-4"></ul>
+  </nav>
+</div>
+<div id="footer-placeholder"></div>
+<script>
+  const PRODUCTS_URL = 'https://api.otanapp.kz:3000/products?limit=1000';
+  const ITEMS_PER_PAGE = 20;
+  let products = [];
+  let currentPage = 1;
+  let selectedCategory = 'Все';
+
+  function filterCategory(category) {
+    selectedCategory = category;
+    currentPage = 1;
+    render();
+  }
+
+
+
+ 
+
+  async function loadProducts() {
+    try {
+      const res = await fetch(PRODUCTS_URL);
+      products = await res.json();
+      render();
+    } catch (err) {
+      console.error('Ошибка загрузки товаров:', err);
+    }
+  }
+  const categoryMap = {
+    'Мужской уход': [
+      "100 жас for MEN+",
+      "Aryn Med+",
+      "Alhayat черный тмин",
+      "Uzakomir концентрат"
+    ],
+    'Женский уход': [
+      "Концентрат 100 ЖАС",
+      "Saumal Saulife",
+      "Uzakomir концентрат",
+      "Aryn Med Бальзам",
+      "Aryn Med тампон"
+    ],
+    'Детокс': [
+      "Laminal",
+      "COLLAGEN Биотин B7",
+      "НАТИВ плюс"
+    ],
+    'Детский уход': [
+      "Laminal Kids"
+    ]
+  };
+
+  function render() {
+  const searchValue = document.getElementById('search-input')?.value?.toLowerCase() || '';
+
+  let filtered = products.filter(p => p.name?.toLowerCase().includes(searchValue));
+
+  if (selectedCategory !== 'Все') {
+    const namesInCategory = categoryMap[selectedCategory] || [];
+    filtered = filtered.filter(p =>
+      namesInCategory.some(name => p.name?.toLowerCase().includes(name.toLowerCase()))
+    );
+  }
+
+  renderPage(filtered, currentPage);
+  renderPagination(filtered.length);
+}
+
+
+
+
+function renderPage(listData, page) {
+  const list = document.getElementById('product-list');
+  list.innerHTML = '';
+  
+  if (listData.length === 0) {
+    list.innerHTML = '<div class="col-12 text-center text-muted fs-5">Товары не найдены</div>';
+    return;
+  }
+
+  const start = (page - 1) * ITEMS_PER_PAGE;
+  const end = start + ITEMS_PER_PAGE;
+
+  listData.slice(start, end).forEach(p => {
+    const col = document.createElement('div');
+    const rating = (Math.random() * 0.3 + 4.7).toFixed(1);
+    const votes = Math.floor(200 + (5 - rating) * 200 + Math.random() * 100);
+
+    col.className = 'col-md-4 col-lg-3';
+
+    col.innerHTML = `
+  <div class="card product-card border-0 rounded-4 overflow-hidden h-100 position-relative"
+      onclick="location.href='product.html?id=${p._id}'" style="cursor: pointer;">
+    <div class="position-relative">
+      <img src="${p.imageUrl || 'https://via.placeholder.com/300x200'}"
+          class="card-img w-100 object-fit-cover product-img" alt="${p.name}">
+      <div class="d-flex justify-content-between align-items-center mt-auto" style="padding:0px 1.25rem">
+      </div>
+      <div style="padding:5px 1.25rem; margin-top: 10px;">
+        <img style="width:30px; border-radius:50%"
+            src="${p.brandId?.logo || 'https://via.placeholder.com/30'}">
+        <span style="margin-left:5px">${p.name}</span>
+      </div>
+      <span style="padding:0px 1.25rem">
+          <span class="fs-5 fw-bold text-success">
+            ${p.priceGroup?.default?.toLocaleString() ?? '—'} ₸
+          </span>
+          <span class="text-muted text-decoration-line-through me-2" style="font-size: 15px; margin-left: 12px">
+            ${p.priceGroup?.default ? (p.priceGroup.default + 2000).toLocaleString() : '—'} ₸
+          </span>
+        </span>
+    </div>
+
+    <div class="card-body d-flex flex-column" style="padding-top:0">
+      <div class="d-flex align-items-center mt-1 mb-2">
+        <div class="text-warning me-2">
+          <i class="bi bi-star-fill"></i>
+        </div>
+        <span class="text-muted small">${rating} - ${votes} оценок</span>
+      </div>
+
+      <div class="d-grid gap-2 mt-auto">
+        <button class="btn btn-success rounded-pill" style="border-radius: 5px;"
+                onclick='addToCart("${p._id}", event)'>
+          <i class="bi bi-cart-plus me-1"></i> В корзину
+        </button>
+      </div>
+    </div>
+  </div>
+`;
+
+
+
+
+
+
+
+
+
+    list.appendChild(col);
+  });
+}
+
+
+  function stripHtml(html) {
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    return div.textContent || div.innerText || '';
+  }
+
+  function addToCart(id, e) {
+    // не даём клику по кнопке «заразить» карточку
+    if (e) e.stopPropagation();
+
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    cart.push(id);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    showToast('✅ Товар добавлен в корзину');
+  }
+
+
+
+  function renderPagination(totalItems) {
+  const pages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+  const pagination = document.getElementById('pagination');
+  pagination.innerHTML = '';
+
+  const addItem = (label, page, disabled = false, active = false) => {
+    const li = document.createElement('li');
+    li.className = `page-item ${disabled ? 'disabled' : ''} ${active ? 'active' : ''}`;
+    li.innerHTML = `<a class="page-link" href="#">${label}</a>`;
+    if (!disabled) li.addEventListener('click', e => {
+      e.preventDefault();
+      currentPage = page;
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    pagination.appendChild(li);
+  };
+
+  if (pages <= 1) return; // Не показываем пагинацию, если всего 1 страница
+
+  addItem('«', currentPage - 1, currentPage === 1);
+
+  for (let i = 1; i <= pages; i++) {
+    if (i <= 2 || i > pages - 2 || Math.abs(i - currentPage) <= 1) {
+      addItem(i, i, false, i === currentPage);
+    } else if (i === 3 || i === pages - 2) {
+      const li = document.createElement('li');
+      li.className = 'page-item disabled';
+      li.innerHTML = '<span class="page-link">…</span>';
+      pagination.appendChild(li);
+    }
+  }
+
+  addItem('»', currentPage + 1, currentPage === pages);
+}
+
+  
+
+  loadProducts();
+  document.getElementById('search-input').addEventListener('input', () => {
+  currentPage = 1;
+  render();
+});
+
+</script>
+<script>
+  async function loadPartial(id, url) {
+    const response = await fetch(url);
+    const html = await response.text();
+    document.getElementById(id).innerHTML = html;
+  }
+
+  loadPartial("header-placeholder", "header.html");
+  loadPartial("footer-placeholder", "footer.html");
+
+  // Обновить счётчики корзины после загрузки хедера
+  setTimeout(() => {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const cartEl = document.getElementById('cart-count');
+    const cartEl2 = document.getElementById('cart-count-desktop');
+
+    if (cartEl) cartEl.textContent = cart.length;
+    if (cartEl2) cartEl2.textContent = cart.length;
+  }, 500);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<div id="custom-toast" class="custom-toast">Товар добавлен в корзину</div>
+</body>
+</html>

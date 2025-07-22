@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Детали товара</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+
+  <style>
+    .product-img {
+      max-width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      cursor: zoom-in;
+    }
+    .thumbnail-img {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .thumbnail-img:hover,
+    .thumbnail-img.active {
+      border-color: #0d6efd;
+    }
+    .thumbnail-container {
+      gap: 0.5rem;
+    }
+    .modal-content.bg-dark {
+      background-color: #000;
+    }
+    .zoom-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.zoom-lens {
+  position: absolute;
+  border: 2px solid #000;
+  width: 100px;
+  height: 100px;
+  visibility: hidden;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: 200% 200%;
+  z-index: 10;
+}
+
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <div class="container my-5">
+    <a href="catalog.html" class="btn btn-sm btn-outline-secondary mb-3" style="margin-top: 0px;">← Назад</a>
+    <div id="product-details" class="row"></div>
+  </div>
+
+  <!-- Модалка просмотра изображений -->
+  <div class="modal fade" id="imageModal" style="box-shadow: 0px;" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl"  style="box-shadow: 0px; border: 0px;">
+      <div class="modal-content" style="background-color: rgb(0,0,0,0); box-shadow: 0px; border: 0px;">
+        <div class="modal-body p-0 text-center position-relative">
+          <img id="modal-image" src="" class="img-fluid w-100" style="max-height: 90vh; object-fit: contain;" />
+          <div class="d-flex justify-content-between position-absolute top-50 start-0 w-100 px-3" style="transform: translateY(-50%);">
+            <button class="btn btn-light" id="prevImage"><i class="bi bi-chevron-left"></i></button>
+            <button class="btn btn-light" id="nextImage"><i class="bi bi-chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer-placeholder"></div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+    let allImages = [], currentIndex = 0;
+
+    async function loadProduct() {
+      if (!productId) return;
+
+      const res = await fetch(`https://api.otanapp.kz:3000/products/${productId}`);
+      const product = await res.json();
+
+      const mainImage = product.imageUrl || 'https://via.placeholder.com/400';
+      const additionalImages = Array.isArray(product.additionalImageUrls) ? product.additionalImageUrls : [];
+      allImages = [mainImage, ...additionalImages.filter(url => url !== mainImage)];
+
+      const container = document.getElementById('product-details');
+      container.innerHTML = `
+        <div class="col-md-6">
+          <img id="main-image" src="${mainImage}" alt="${product.name}" class="product-img img-fluid rounded shadow-sm mb-3" onclick="openImageModal(0)">
+          ${allImages.length > 1 ? `
+            <div class="d-flex flex-wrap thumbnail-container">
+              ${allImages.map((url, index) => `
+                <img src="${url}" class="thumbnail-img rounded shadow-sm ${index === 0 ? 'active' : ''}" onclick="setMainImage(this, '${url}', ${index})">
+              `).join('')}
+            </div>` : ''}
+        </div>
+        <div class="col-md-6">
+          <h2 style="margin-top: 10px;">${product.name}</h2>
+          <p class="text-muted" style="margin-bottom: 10px;">Вес: ${product.weight ?? '—'} г</p>
+          <h4 style="margin-bottom: 20px;" class="text-success">${product.priceGroup?.default ?? 'Цена не указана'} ₸</h4>
+          <div class="mb-3">${product.description || 'Нет описания.'}</div>
+          <button class="btn btn-primary" onclick='addToCart("${product._id}")'>Добавить в корзину</button>
+        </div>
+      `;
+    }
+
+    function setMainImage(thumbnailEl, url, index) {
+      const mainImage = document.getElementById('main-image');
+      mainImage.src = url;
+      mainImage.onclick = () => openImageModal(index);
+
+      document.querySelectorAll('.thumbnail-img').forEach(img => img.classList.remove('active'));
+      thumbnailEl.classList.add('active');
+    }
+
+    function openImageModal(index) {
+      currentIndex = index;
+      const modalImg = document.getElementById("modal-image");
+      modalImg.src = allImages[currentIndex];
+      const modal = new bootstrap.Modal(document.getElementById("imageModal"));
+      modal.show();
+    }
+
+    function showImage(offset) {
+      currentIndex = (currentIndex + offset + allImages.length) % allImages.length;
+      document.getElementById("modal-image").src = allImages[currentIndex];
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("prevImage").addEventListener("click", () => showImage(-1));
+      document.getElementById("nextImage").addEventListener("click", () => showImage(1));
+    });
+
+    function addToCart(id) {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      cart.push(id);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert('Товар добавлен в корзину');
+    }
+
+    loadProduct();
+  </script>
+
+  <script>
+    async function loadPartial(id, url) {
+      const response = await fetch(url);
+      const html = await response.text();
+      document.getElementById(id).innerHTML = html;
+    }
+
+    loadPartial("header-placeholder", "header.html");
+    loadPartial("footer-placeholder", "footer.html");
+
+    setTimeout(() => {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartEl = document.getElementById('cart-count');
+      const cartEl2 = document.getElementById('cart-count-desktop');
+      if (cartEl) cartEl.textContent = cart.length;
+      if (cartEl2) cartEl2.textContent = cart.length;
+    }, 500);
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
