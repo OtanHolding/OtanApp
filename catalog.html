@@ -245,9 +245,10 @@
       transition: background-color 0.3s ease;
     }
 
-.company-info_link:hover {
-  background-color: darkorange;
-}
+    .company-info_link:hover {
+      background-color: darkorange;
+    }
+
 
 
 
@@ -275,6 +276,29 @@
         width: 100%;
         height: 90px;
       }
+      .row{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        
+      }
+      .card-img{
+        height: 150px;
+      }
+      .categories {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+
+      .categories button:first-child {
+        grid-column: 1 / -1; /* занимает всю ширину */
+        font-size: 22px;
+      }
+
+      .categories button:first-child img{
+        width: 100px;
+      }
+      
     }
   </style>
 </head>
@@ -308,7 +332,6 @@
 
 
 <div class="container my-5">
-  <h1 class="mb-4 text-center">Каталог товаров</h1>
   <div class="mb-4 text-center">
     <input id="search-input" type="text" class="form-control w-100 mx-auto" placeholder="Поиск по товарам...">
   </div>
@@ -335,7 +358,7 @@
       </button>
   </div>
 
-
+  <h1 class="mb-4 text-center">Каталог товаров</h1>
   <div id="product-list" class="row g-4"></div>
   <nav aria-label="Навигация по страницам">
     <ul id="pagination" class="pagination justify-content-center mt-4"></ul>
@@ -569,5 +592,19 @@ function renderPage(listData, page) {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <div id="custom-toast" class="custom-toast">Товар добавлен в корзину</div>
+<script>
+  function showToast(message) {
+    const toast = document.getElementById('custom-toast');
+    if (!toast) return;
+
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+</script>
+
 </body>
 </html>
