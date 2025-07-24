@@ -257,11 +257,83 @@
       margin-top: 8px;
     }
 
+    .logo{
+      width: 20%; margin-left: 40%; margin-top: 50px;
+    }
+
+    .partner{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0px 350px;
+      background-color: #089c5d;
+    }
+    .partner h1,
+    .partner p{
+      width: 80%;
+      color: white;
+    }
+
+    .partner p{
+      margin-bottom: 50px;
+    }
+
+    .partner a{
+      background-color: white;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: #089c5d;
+      font-weight: semi-bold;
+    }
+    .partner-right{
+      position: relative;
+      height: 500px;
+      width: 550px;
+    }
+    .partner img{
+      width: 550px;
+      position: absolute;
+      bottom: 0px;
+    }
+
     @media (max-width: 768px) {
       .company-adv_grid {
         grid-template-columns: 1fr;
       }
+      .partner{
+        padding: 0px;
+        overflow: hidden;
+
+      }
+      .partner div{
+        width: 100%;
+        position: relative;
+      }
+
+      .partner img{
+        width: 400px;
+        position: absolute;
+      }
+      .partner p,
+      .partner h1{
+        width: 80%;
+        margin: auto;
+        margin-bottom: 30px;
+      }
+      .partner a{
+        position: relative;
+        left: 10%;
+        margin-bottom: 30px;
+      }
+      .container-brands{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+      }
       
+
     }
 
 
@@ -321,7 +393,39 @@
       .grid-company_catalog{
         padding-bottom: 30px; 
       }
+      .logo{
+        width: 50%; margin-left: 25%; margin-top: 50px;
+      }
+      .partner{
+        display: flex;
+        flex-direction: column;
+        padding: 0px;
+        text-align: center;
+        padding-top: 30px;
+      }
+
+      .partner a{
+        z-index: -1;
+      }
+
+      .partner p,
+      .partner h1{
+        width: 90%;
+        margin: auto;
+        margin-bottom: 30px;
+
+      }
       
+      .partner img{
+        width: 100%;
+        position: relative;
+        margin-top: 30px;
+        left: 20px;
+      }
+      .partner-right{
+        width: 100%;
+        height: auto;
+      }
     }
     
   </style>
@@ -333,7 +437,7 @@
 
 <main>
   <section class="company-title"> 
-    <img src="https://s14.gifyu.com/images/bKVZC.png" style="width: 20%; margin-left: 40%; margin-top: 50px;">
+    <img src="https://s14.gifyu.com/images/bKVZC.png" class="logo">
     <h3 class="mt-4 text-center" style="color: white;">Продукты, которым доверяют здоровье</h3>
     <p class="company-content_p"></p>
     
@@ -433,7 +537,16 @@
       </div>
     </div>
   </section>
-
+  <section class="partner">
+    <div class="partner-left">
+      <h1>Присоединяйтесь и Зарабатывайте с OtanApp</h1>
+      <p>Мы рады новым поставщикам и партнерам! с OtanApp каждый участник получает шанс увеличить свой доход.</p>
+      <a href="https://otanapp.kz" target="_blank" rel="noopener noreferrer">Подробнее</a>
+    </div>
+    <div class="partner-right">
+      <img src="https://s14.gifyu.com/images/bKYYJ.png" alt="">
+    </div>
+  </section>
 </main>
 
 <footer style="margin-top: -50px;">
