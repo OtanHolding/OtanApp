@@ -249,6 +249,9 @@
       background-color: darkorange;
     }
 
+    .text-muted{
+      font-size: 15px; margin-left: 12px;
+    }
 
 
 
@@ -298,7 +301,11 @@
       .categories button:first-child img{
         width: 100px;
       }
-      
+      .text-muted{
+        font-size: 12px; 
+        margin-left: 2px;
+
+      }
     }
   </style>
 </head>
@@ -470,7 +477,7 @@ function renderPage(listData, page) {
           <span class="fs-5 fw-bold text-success">
             ${p.priceGroup?.default?.toLocaleString() ?? '—'} ₸
           </span>
-          <span class="text-muted text-decoration-line-through me-2" style="font-size: 15px; margin-left: 12px">
+          <span class="text-muted text-decoration-line-through me-2" >
             ${p.priceGroup?.default ? (p.priceGroup.default + 2000).toLocaleString() : '—'} ₸
           </span>
         </span>
