@@ -301,6 +301,10 @@
       bottom: 0px;
     }
 
+    .partner-a{
+      margin-left: 12px;
+    }
+
     @media (max-width: 768px) {
       .company-adv_grid {
         grid-template-columns: 1fr;
@@ -412,8 +416,21 @@
         padding-top: 30px;
       }
 
-      .partner a{
-        z-index: -1;
+      .partner-left div{
+        display: grid;
+        width: 50%;
+        margin: auto;
+        text-align: left;
+        position: relative;
+      }
+
+      .partner-left a{
+        margin-left: 0px;
+        left: 0px;
+      }
+      
+      .partner-left{
+        position: relative;
       }
 
       .partner p,
@@ -424,11 +441,13 @@
         margin-bottom: 30px;
 
       }
+
+      
       
       .partner img{
         width: 100%;
         position: relative;
-        margin-top: 30px;
+        margin-top: -30px;
         left: 20px;
       }
       .partner-right{
@@ -439,6 +458,7 @@
         width: 90%;
         margin: auto;
       }
+      
     }
     
   </style>
@@ -589,13 +609,15 @@
     <div class="partner-left">
       <h1>Присоединяйтесь и Зарабатывайте с OtanApp</h1>
       <p>Мы рады новым поставщикам и партнерам! с OtanApp каждый участник получает шанс увеличить свой доход.</p>
-      <a href="https://otanapp.kz" target="_blank" rel="noopener noreferrer">
-        <i class="fas fa-arrow-right"></i> Подробнее
-      </a>
+      <div>
+        <a href="https://otanapp.kz" target="_blank" rel="noopener noreferrer">
+          <i class="fas fa-arrow-right"></i> Подробнее
+        </a>
 
-      <a href="https://www.instagram.com/otanapp.kz" style="margin-left: 10px;" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-instagram"></i> Инстаграм
-      </a>
+        <a href="https://www.instagram.com/otanapp.kz" class="partner-a" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-instagram"></i> Инстаграм
+        </a>
+      </div>
 
     </div>
     <div class="partner-right">
