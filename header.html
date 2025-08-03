@@ -11,7 +11,7 @@
 </style>
 <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom shadow-sm">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="index.html">
+    <a class="navbar-brand fw-bold" href="catalog.html">
       <img src="https://s14.gifyu.com/images/bKU2F.png" style="width: 150px;">
     </a>
 
@@ -37,7 +37,7 @@
           <a class="nav-link" href="catalog.html">Каталог</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="companyinfo.html">Сертификаты</a>
+          <a class="nav-link" href="certificate.html">Сертификаты</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="cart.html">
@@ -56,4 +56,14 @@
     document.getElementById('favorites-count').textContent = favorites.length;
     document.getElementById('favorites-count-desktop').textContent = favorites.length;
   }
+
+  function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const cartEl = document.getElementById('cart-count');
+    const cartEl2 = document.getElementById('cart-count-desktop');
+
+    if (cartEl) cartEl.textContent = cart.length;
+    if (cartEl2) cartEl2.textContent = cart.length;
+  }
+
 </script>
