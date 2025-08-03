@@ -91,7 +91,7 @@
     }
     .custom-toast {
       position: fixed;
-      bottom: 30px;
+      bottom: 110px;
       right: 30px;
       background-color: #198754; /* Bootstrap green */
       color: #fff;
@@ -252,8 +252,49 @@
     .text-muted{
       font-size: 15px; margin-left: 12px;
     }
+.ios-cart-bar {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 500px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        padding: 10px;
+        z-index: 999;
+        display: grid;
+        grid-template-rows: auto auto;
+        row-gap: 10px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        text-align: center;
+      }
 
+      .ios-cart-info {
+        font-size: 16px;
+      }
 
+      .ios-cart-button {
+        background: #007aff;
+        color: #fff;
+        padding: 5px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        display: block;
+        width: 100%;
+        transition: background-color 0.3s ease;
+      }
+
+      .ios-cart-button:hover {
+        background-color: #005ecb;
+      }
+    
 
     @media (max-width: 992px) {
       .categories {
@@ -312,6 +353,49 @@
         
       }
       
+      .ios-cart-bar {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 500px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 20px;
+        padding: 10px;
+        z-index: 999;
+        display: grid;
+        grid-template-rows: auto auto;
+        row-gap: 10px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        text-align: center;
+      }
+
+      .ios-cart-info {
+        font-size: 16px;
+      }
+
+      .ios-cart-button {
+        background: #007aff;
+        color: #fff;
+        padding: 5px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        display: block;
+        width: 100%;
+        transition: background-color 0.3s ease;
+      }
+
+      .ios-cart-button:hover {
+        background-color: #005ecb;
+      }
+
     }
   </style>
 </head>
@@ -397,6 +481,14 @@
   </nav>
 </div>
 <div id="footer-placeholder"></div>
+<div id="bottom-cart-bar" class="ios-cart-bar">
+  <div class="ios-cart-info">
+    🛍️ В корзине: <span id="bottom-cart-count">0</span> товар(ов)
+  </div>
+  <a href="cart.html" class="ios-cart-button">Перейти к оплате</a>
+</div>
+
+
 <script>
   const PRODUCTS_URL = 'https://api.otanapp.kz:3000/products?limit=1000';
   const ITEMS_PER_PAGE = 20;
@@ -469,7 +561,7 @@
 function renderPage(listData, page) {
   const list = document.getElementById('product-list');
   list.innerHTML = '';
-  
+
   if (listData.length === 0) {
     list.innerHTML = '<div class="col-12 text-center text-muted fs-5">Товары не найдены</div>';
     return;
@@ -478,61 +570,54 @@ function renderPage(listData, page) {
   const start = (page - 1) * ITEMS_PER_PAGE;
   const end = start + ITEMS_PER_PAGE;
 
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
   listData.slice(start, end).forEach(p => {
     const col = document.createElement('div');
-    const rating = (Math.random() * 0.3 + 4.7).toFixed(1);
-    const votes = Math.floor(200 + (5 - rating) * 200 + Math.random() * 100);
-
     col.className = 'col-md-4 col-lg-3';
 
+    const rating = (Math.random() * 0.3 + 4.7).toFixed(1);
+    const votes = Math.floor(200 + (5 - rating) * 200 + Math.random() * 100);
+    const isInCart = cart.includes(p._id);
+
     col.innerHTML = `
-  <div class="card product-card border-0 rounded-4 overflow-hidden h-100 position-relative"
-      onclick="location.href='product.html?id=${p._id}'" style="cursor: pointer;">
-    <div class="position-relative">
-      <img src="${p.imageUrl || 'https://via.placeholder.com/300x200'}"
-          class="card-img w-100 object-fit-cover product-img" alt="${p.name}">
-      <div class="d-flex justify-content-between align-items-center mt-auto" style="padding:0px 1.25rem">
-      </div>
-      <div style="padding:5px 1.25rem; margin-top: 10px;">
-        <img style="width:30px; border-radius:50%"
-            src="${p.brandId?.logo || 'https://via.placeholder.com/30'}">
-        <span style="margin-left:5px">${p.name}</span>
-      </div>
-      <span style="padding:0px 1.25rem">
-          <span class="fs-5 fw-bold text-success">
-            ${p.priceGroup?.default?.toLocaleString() ?? '—'} ₸
+      <div class="card product-card border-0 rounded-4 overflow-hidden h-100 position-relative"
+           onclick="event.target.tagName !== 'BUTTON' && (location.href='product.html?id=${p._id}')"
+ style="cursor: pointer;">
+        <div class="position-relative">
+          <img src="${p.imageUrl || 'https://via.placeholder.com/300x200'}"
+               class="card-img w-100 object-fit-cover product-img" alt="${p.name}">
+          <div class="d-flex justify-content-between align-items-center mt-auto" style="padding:0px 1.25rem"></div>
+          <div style="padding:5px 1.25rem; margin-top: 10px;">
+            <img style="width:30px; border-radius:50%" src="${p.brandId?.logo || 'https://via.placeholder.com/30'}">
+            <span style="margin-left:5px">${p.name}</span>
+          </div>
+          <span style="padding:0px 1.25rem">
+            <span class="fs-5 fw-bold text-success">${p.priceGroup?.default?.toLocaleString() ?? '—'} ₸</span>
+            <span class="text-muted text-decoration-line-through me-2">
+              ${p.priceGroup?.default ? (p.priceGroup.default + 2000).toLocaleString() : '—'} ₸
+            </span>
           </span>
-          <span class="text-muted text-decoration-line-through me-2" >
-            ${p.priceGroup?.default ? (p.priceGroup.default + 2000).toLocaleString() : '—'} ₸
-          </span>
-        </span>
-    </div>
-
-    <div class="card-body d-flex flex-column" style="padding-top:0">
-      <div class="d-flex align-items-center mt-1 mb-2 rating">
-        <div class="text-warning me-2">
-          <i class="bi bi-star-fill"></i>
         </div>
-        <span class="text-muted small">${rating} - ${votes} оценок</span>
+
+        <div class="card-body d-flex flex-column" style="padding-top:0">
+          <div class="d-flex align-items-center mt-1 mb-2 rating">
+            <div class="text-warning me-2"><i class="bi bi-star-fill"></i></div>
+            <span class="text-muted small">${rating} - ${votes} оценок</span>
+          </div>
+
+          <div class="d-grid gap-2 mt-auto">
+            <button class="btn ${isInCart ? 'btn-secondary' : 'btn-success'} rounded-pill"
+                    style="border-radius: 5px;" 
+                    ${isInCart ? 'disabled' : ''}
+                    onclick='addToCart("${p._id}", event)'>
+              <i class="bi ${isInCart ? 'bi-check2-circle' : 'bi-cart-plus'} me-1"></i>
+              ${isInCart ? 'Добавлен' : 'В корзину'}
+            </button>
+          </div>
+        </div>
       </div>
-
-      <div class="d-grid gap-2 mt-auto">
-        <button class="btn btn-success rounded-pill" style="border-radius: 5px;"
-                onclick='addToCart("${p._id}", event)'>
-          <i class="bi bi-cart-plus me-1"></i> В корзину
-        </button>
-      </div>
-    </div>
-  </div>
-`;
-
-
-
-
-
-
-
-
+    `;
 
     list.appendChild(col);
   });
@@ -544,16 +629,44 @@ function renderPage(listData, page) {
     div.innerHTML = html;
     return div.textContent || div.innerText || '';
   }
+ function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartEl = document.getElementById('cart-count');
+  const cartEl2 = document.getElementById('cart-count-desktop');
+  const bottomCartCount = document.getElementById('bottom-cart-count');
+
+  if (cartEl) cartEl.textContent = cart.length;
+  if (cartEl2) cartEl2.textContent = cart.length;
+  if (bottomCartCount) bottomCartCount.textContent = cart.length;
+}
+
+
 
   function addToCart(id, e) {
-    // не даём клику по кнопке «заразить» карточку
-    if (e) e.stopPropagation();
+  if (e) e.stopPropagation();
 
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    cart.push(id);
-    localStorage.setItem('cart', JSON.stringify(cart));
-    showToast('✅ Товар добавлен в корзину');
+  let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+  // Проверка: если уже в корзине — не добавляем повторно
+  if (cart.includes(id)) {
+    showToast('⚠️ Товар уже в корзине');
+    return;
   }
+
+  cart.push(id);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCartCount();
+
+  // Изменяем внешний вид кнопки
+  const button = e.target.closest('button');
+  button.innerHTML = `<i class="bi bi-check2-circle me-1"></i> Добавлен`;
+  button.classList.remove('btn-success');
+  button.classList.add('btn-secondary');
+  button.disabled = true;
+
+  showToast('✅ Товар добавлен в корзину');
+}
+
 
 
 
@@ -637,6 +750,12 @@ function renderPage(listData, page) {
       toast.classList.remove('show');
     }, 3000);
   }
+</script>
+<script>
+  // Подождём пока DOM полностью загрузится
+  document.addEventListener('DOMContentLoaded', function () {
+    updateCartCount();
+  });
 </script>
 
 </body>
