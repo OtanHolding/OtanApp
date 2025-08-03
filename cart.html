@@ -41,7 +41,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Необходимо заполнить все поля для продолжения.</h5>
+          <h5 class="modal-title">Необходимо заполнить все поля для продолжения:</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
@@ -62,7 +62,8 @@
               <label for="city" class="form-label">Город</label>
               <input type="text" placeholder="г. Алматы" class="form-control" id="city" required>
             </div>
-            <p style="text-align: center;">* Стоимость доставки не включена и будет уточнена оператором.</p>
+            <p style="text-align: center; color: darkslategray; font-size: 16px; font-style: italic;">* Стоимость доставки не включена и будет уточнена оператором.</p>
+
           </form>
         </div>
         <div class="modal-footer">
@@ -72,6 +73,26 @@
       </div>
     </div>
   </div>
+  <!-- Универсальная модалка подтверждения -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalTitle">Подтверждение</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="confirmModalBody">
+        Вы действительно хотите удалить товар из корзины?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Удалить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
   <div id="footer-placeholder"></div>
 
   <script>
@@ -79,6 +100,8 @@
 
     async function loadCart() {
       const ids = JSON.parse(localStorage.getItem('cart') || '[]');
+      updateCartCount(); // добавлено!
+
       const container = document.getElementById('cart-container');
       if (!ids.length) {
         container.innerHTML = '<p class="text-muted text-center">Корзина пуста.</p>';
@@ -120,19 +143,66 @@
       html += `</tbody></table></div>
         <div class="text-end fw-bold fs-5">Итого: ${total} ₸</div>
         <div class="text-end mt-3">
-          <button class="btn btn-danger me-2" onclick="clearCart()">Очистить корзину</button>
+          <button class="btn btn-danger me-2" onclick="confirmClearCart()">Очистить корзину</button>
           <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkoutModal">Оформить заказ</button>
         </div>`;
 
       container.innerHTML = html;
     }
 
+    let deleteIndex = null;
+    let isClearAll = false; // новый флаг
+
+
     function removeItem(index) {
-      const ids = JSON.parse(localStorage.getItem('cart') || '[]');
-      ids.splice(index, 1);
-      localStorage.setItem('cart', JSON.stringify(ids));
-      loadCart();
+      deleteIndex = index;
+      isClearAll = false;
+
+      document.getElementById('confirmModalTitle').textContent = 'Удаление товара';
+      document.getElementById('confirmModalBody').textContent = 'Вы действительно хотите удалить товар из корзины?';
+
+      const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+      modal.show();
     }
+
+    function confirmClearCart() {
+      isClearAll = true;
+      deleteIndex = null;
+
+      document.getElementById('confirmModalTitle').textContent = 'Очистить корзину';
+      document.getElementById('confirmModalBody').textContent = 'Вы действительно хотите полностью очистить корзину?';
+
+      const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+      modal.show();
+    }
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartEl = document.getElementById('cart-count');
+      const cartEl2 = document.getElementById('cart-count-desktop');
+
+      if (cartEl) cartEl.textContent = cart.length;
+      if (cartEl2) cartEl2.textContent = cart.length;
+    }
+
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+  if (isClearAll) {
+    localStorage.removeItem('cart');
+    loadCart();
+  } else if (deleteIndex !== null) {
+    const ids = JSON.parse(localStorage.getItem('cart') || '[]');
+    ids.splice(deleteIndex, 1);
+    localStorage.setItem('cart', JSON.stringify(ids));
+    loadCart();
+  }
+
+  const modal = bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal'));
+  modal.hide();
+  deleteIndex = null;
+  isClearAll = false;
+});
+
 
     function clearCart() {
       localStorage.removeItem('cart');
@@ -219,15 +289,8 @@
   loadPartial("header-placeholder", "header.html");
   loadPartial("footer-placeholder", "footer.html");
 
-  // Обновить счётчики корзины после загрузки хедера
-  setTimeout(() => {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const cartEl = document.getElementById('cart-count');
-    const cartEl2 = document.getElementById('cart-count-desktop');
+  setTimeout(updateCartCount, 500); // Временно, если header загружается не сразу
 
-    if (cartEl) cartEl.textContent = cart.length;
-    if (cartEl2) cartEl2.textContent = cart.length;
-  }, 500);
 </script>
 
 
