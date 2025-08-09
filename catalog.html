@@ -608,6 +608,22 @@
   renderPage(filtered, currentPage);
   renderPagination(filtered.length);
 }
+function filterCategory(category) {
+  selectedCategory = category;
+  currentPage = 1;
+
+  // Меняем заголовок
+  const title = document.querySelector('h1.mb-4');
+  if (title) {
+    if (category === 'Все') {
+      title.textContent = 'Каталог товаров';
+    } else {
+      title.textContent = `Результаты категории: ${category}`;
+    }
+  }
+
+  render();
+}
 
 
 
