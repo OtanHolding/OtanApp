@@ -307,19 +307,60 @@
     }
 
     @media (max-width: 768px) {
-      .categories {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    .categories {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;  
+      gap: 1rem;
+      padding-bottom: 5px;  
+      margin-bottom: 0;
+      scrollbar-width: none;  
+      -webkit-overflow-scrolling: touch;
+      background-clip: content-box;
     }
 
+    .categories button {
+      flex: 0 0 auto;
+      margin: 0;  
+      width: 90px;
+      background-color: rgba(0,0,0,0);
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+     .categories::-webkit-scrollbar {
+      display: none;
+    }
+
+    
+    .categories img{
+      width: 65px;
+      height: 65px;
+      margin: auto;
+      object-fit: contain; /* чтобы картинка не обрезалась */
+
+      border-radius: 50%;
+      margin-bottom: 0px;
+    }
+
+    .categories span{
+      margin: 0px;
+      font-size: 13px;
+      margin: auto;
+      text-align: center;
+      margin-top: -15px;
+      height: 36px;
+      color: #333;
+    }
+    .card span{
+      font-size: 14px;
+    }
+  }
+
+
     @media (max-width: 480px) {
-      .categories {
-        grid-template-columns: 1fr;
-      }
-      .categories img{
-        width: 100%;
-        height: 90px;
-      }
+      
       .row{
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -328,20 +369,7 @@
       .card-img{
         height: 150px;
       }
-      .categories {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-      }
-
-      .categories button:first-child {
-        grid-column: 1 / -1; /* занимает всю ширину */
-        font-size: 22px;
-      }
-
-      .categories button:first-child img{
-        width: 100px;
-      }
+      
       .text-muted{
         font-size: 12px; 
         margin-left: 2px;
@@ -472,33 +500,33 @@
 
 
 <div class="container my-5">
-  <div class="mb-4 text-center">
+  <div class="mb-4" >
     <input id="search-input" type="text" class="form-control w-100 mx-auto" placeholder="Поиск по товарам...">
   </div>
   <div class="categories">
-      <button class="" onclick="filterCategory('Все')" style="background-color: #ebf6ff;">
-        <img src="https://s14.gifyu.com/images/bK7OW.png">
+      <button class="" onclick="filterCategory('Все')" >
+        <img src="https://s14.gifyu.com/images/bN71L.png">
         <span>Все продукций</span>
       </button>
-      <button class="" onclick="filterCategory('Мужской уход')" style="background-color: #ecf8f8;">
-        <img src="https://png.pngtree.com/png-vector/20240929/ourmid/pngtree-vitamin-bottle-mockup-on-transparent-background-include-file-png-image_13962082.png">
+      <button class="" onclick="filterCategory('Мужской уход')" >
+        <img src="https://s14.gifyu.com/images/bN71x.png">
         <span>Мужская продукция</span>
       </button>
-      <button class="" onclick="filterCategory('Женский уход')" style="background-color: #f8f5ec;">
-        <img src="https://s14.gifyu.com/images/bKsOH.png">
+      <button class="" onclick="filterCategory('Женский уход')">
+        <img src="https://s14.gifyu.com/images/bN71N.png">
         <span>Женское здоровье</span>
       </button>
-      <button class="" onclick="filterCategory('Детский уход')" style="background-color: #ecf8f8;">
-        <img src="https://images.ua.prom.st/1401583600_w640_h640_detskie-zhevatelnye-pastilki.jpg">
+      <button class="" onclick="filterCategory('Детский уход')" >
+        <img src="https://s14.gifyu.com/images/bN71k.png">
         <span>Для детей</span>
       </button>
-      <button class="" onclick="filterCategory('Детокс')" style="background-color: #f4f0eb;">
-        <img src="https://png.pngtree.com/png-vector/20241120/ourmid/pngtree-healthy-detox-green-juice-with-fresh-fruits-and-vegetables-png-image_14506517.png">
+      <button class="" onclick="filterCategory('Детокс')" >
+        <img src="https://s14.gifyu.com/images/bN71g.png">
         <span>Детокс</span>
       </button>
   </div>
 
-  <h1 class="mb-4 text-center">Каталог товаров</h1>
+  <h1 class="mb-4" style="margin-left: 10px;">Каталог товаров</h1>
   <div id="product-list" class="row g-4"></div>
   <nav aria-label="Навигация по страницам">
     <ul id="pagination" class="pagination justify-content-center mt-4"></ul>
